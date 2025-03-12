@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Form</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-green-800 min-h-screen flex justify-center items-center">
+
+    <div class="container bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
+        <h2 class="text-2xl font-semibold text-center text-gray-800 mb-6">Submit Your Form</h2>
+        <form id="applicationForm" class="space-y-4" enctype="multipart/form-data">
+            
+            <!-- Resume Upload -->
+            <div>
+                <label for="resume" class="block text-lg font-medium text-gray-700">Upload Resume:</label>
+                <input type="file" id="resume" name="resume" required class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+            </div>
+
+            <!-- Submit Button -->
+            <div class="flex justify-center">
+                <button type="submit" class="w-full py-3 bg-green-500 text-white text-lg font-semibold rounded-md hover:bg-green-600 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-300">
+                    Submit Application
+                </button>
+            </div>
+        </form>
+
+        <!-- Success Message Animation -->
+        <div id="successMessage" class="hidden text-center text-green-600 text-xl font-semibold mt-6 animate-bounce">
+            ✅ Form Submitted Successfully!
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById("applicationForm");
+        const successMessage = document.getElementById("successMessage");
+
+        // Event listener for form submission
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault(); // Prevent the default form submission behavior
+
+            const formData = new FormData(form); // Create FormData object with form data
+            
+            try {
+                // Simulate backend request
+                const response = await fetch("http://localhost:3000/submit-form", {
+                    method: "POST",
+                    body: formData,
+                });
+
+                const result = await response.json();
+                
+                // Handle the response from the server
+                if (result.success) {
+                    successMessage.classList.remove("hidden"); // Show success message with animation
+                    successMessage.classList.add("animate-fadeIn");
+                    setTimeout(() => {
+                        successMessage.classList.add("hidden");
+                        form.reset(); // Reset the form
+                    }, 3000); // Hide the message after 3 seconds
+                } else {
+                    alert("Error submitting form: " + result.message); // Error alert with message
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Something went wrong. Please try again later.");
+            }
+        });
+    </script>
+
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+            animation: fadeIn 1s ease-out;
+        }
+    </style>
+
+</body>
+</html>

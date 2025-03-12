@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View PDFs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gradient-to-r from-blue-50 to-gray-100 flex flex-col items-center justify-center min-h-screen p-6">
+
+    <div class="bg-white shadow-xl rounded-lg p-8 w-full max-w-3xl text-center">
+        <h1 class="text-2xl font-semibold text-gray-900 mb-4">📂 Available PDFs</h1>
+        <p class="text-gray-600 mb-4">Click on a file to view or download.</p>
+
+        <!-- File List -->
+        <div id="loadingMessage" class="text-gray-500">Loading files...</div>
+        <ul id="fileList" class="mt-4 space-y-3"></ul>
+    </div>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", fetchFiles);
+
+        async function fetchFiles() {
+            try {
+                const response = await fetch("http://localhost:3000/get-files");
+                const data = await response.json();
+                console.log(data)
+                const fileList = document.getElementById("fileList");
+                const loadingMessage = document.getElementById("loadingMessage");
+                loadingMessage.style.display = "none";
+
+                fileList.innerHTML = "";
+
+                if (data.success && data.files.length > 0) {
+                    data.files.forEach(file => {
+                        const listItem = document.createElement("li");
+                        listItem.className = "bg-gray-100 hover:bg-gray-200 transition duration-200 rounded-lg p-3 shadow-sm";
+
+                        listItem.innerHTML = `
+                            <button onclick="viewFile('${file._id}')" class="text-blue-600 font-medium hover:text-blue-800">
+                                📄 ${file.filename}
+                            </button>
+                            <div id="viewer-${file._id}" class="hidden mt-2">
+                                <iframe id="pdfViewer-${file._id}" class="w-full h-96 border rounded-lg"></iframe>
+                            </div>
+                        `;
+
+                        fileList.appendChild(listItem);
+                    });
+                } else {
+                    fileList.innerHTML = "<p class='text-red-500'>No files found.</p>";
+                }
+            } catch (error) {
+                console.error("❌ Error fetching files:", error);
+                document.getElementById("loadingMessage").innerHTML = "<p class='text-red-500'>Failed to load files.</p>";
+            }
+        }
+
+        function viewFile(id) {
+            const viewerDiv = document.getElementById(`viewer-${id}`);
+            const iframe = document.getElementById(`pdfViewer-${id}`);
+
+            if (viewerDiv.classList.contains("hidden")) {
+                iframe.src = `http://localhost:3000/file/${id}`;
+                viewerDiv.classList.remove("hidden");
+            } else {
+                viewerDiv.classList.add("hidden");
+            }
+        }
+    </script>
+
+
+</body>
+
+</html>

@@ -3,138 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meeting Scheduler</title>
+    <title>Email to Vice-Chancellor</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script>
-        emailjs.init('VpSWWhyvh-CEGVQg1'); // Replace with your EmailJS Public Key
+        emailjs.init('VpSWWhyvh-CEGVQg1');
     </script>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
-    
-    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
-        <h2 class="text-3xl font-bold text-center text-blue-600 mb-6">Schedule a Meeting</h2>
-        
-        <form id="meetingForm">
-            <!-- Subject -->
-            <label class="block text-gray-700 font-medium">Meeting Subject:</label>
-            <input type="text" name="subject" id="subject" class="w-full p-2 border rounded-lg mb-3 focus:ring-2 focus:ring-blue-500" placeholder="Enter subject" required>
+<body class="bg-gray-50 text-gray-900">
 
-            <!-- Department & Roll -->
-            <div class="flex space-x-3">
-                <div class="w-1/2">
-                    <label class="block text-gray-700 font-medium">Department:</label>
-                    <input type="text" name="department" id="department" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Enter department" required>
+    <!-- Header -->
+    <header class="bg-green-800 text-white py-4 shadow-md">
+        <div class="container mx-auto text-center">
+            <h1 class="text-2xl font-bold">Vice-Chancellor Appointment Request</h1>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto flex items-center justify-center min-h-screen p-6">
+        <div class="bg-white p-8 shadow-xl rounded-lg w-full max-w-lg">
+            <form id="form" class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 font-medium">Subject of Meeting</label>
+                    <input type="text" name="subject" id="subject" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Enter subject" required>
                 </div>
-                <div class="w-1/2">
-                    <label class="block text-gray-700 font-medium">Roll No:</label>
-                    <input type="text" name="rollNumber" id="rollNumber" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Enter roll number" required>
+                <div>
+                    <label class="block text-gray-700 font-medium">Department</label>
+                    <select name="department" id="department" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                        <option value="">Select a department</option>
+                    </select>
                 </div>
-            </div>
-
-            <!-- Role Selection -->
-            <label class="block text-gray-700 font-medium mt-4 mb-2">You are a:</label>
-            <div class="flex space-x-4 mb-4">
-                <div class="role-card p-4 border rounded-lg flex-1 text-center cursor-pointer transition-all duration-300 hover:bg-blue-500 hover:text-white" onclick="selectRole('Student', this)">
-                    <img src="https://img.icons8.com/ios-filled/50/000000/student-male.png" class="mx-auto mb-2"/>
-                    <p class="font-semibold">Student</p>
+                <div>
+                    <label class="block text-gray-700 font-medium">Roll Number</label>
+                    <input type="text" name="rollNumber" id="rollNumber" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Enter roll number" required>
                 </div>
-                <div class="role-card p-4 border rounded-lg flex-1 text-center cursor-pointer transition-all duration-300 hover:bg-blue-500 hover:text-white" onclick="selectRole('Teacher', this)">
-                    <img src="https://img.icons8.com/ios-filled/50/000000/teacher.png" class="mx-auto mb-2"/>
-                    <p class="font-semibold">Teacher</p>
+                <div>
+                    <label class="block text-gray-700 font-medium">Role</label>
+                    <select name="selectedRole" id="selectedRole" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                        <option value="">Select a role</option>
+                    </select>
                 </div>
-            </div>
-            <input type="hidden" name="selectedRole" id="selectedRole" required>
+                <div>
+                    <label class="block text-gray-700 font-medium">Preferred Time Slot</label>
+                    <select name="selectedTimeSlot" id="selectedTimeSlot" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                        <option value="">Select a time slot</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium">Reason for Meeting</label>
+                    <textarea name="meetingReason" id="meetingReason" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" rows="3" placeholder="Enter reason" required></textarea>
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium">Your Name</label>
+                    <input type="text" name="name" id="name" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Enter your name" required>
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium">Your Email</label>
+                    <input type="email" name="email" id="email" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Enter your email" required>
+                </div>
+                <button type="submit" id="button" class="w-full bg-green-800 text-white p-3 rounded-lg hover:bg-blue-700 transition disabled:opacity-50 shadow-lg">Send Request</button>
+            </form>
+        </div>
+    </main>
 
-            <!-- Time Slot Selection -->
-            <label class="block text-gray-700 font-medium mb-2">Select a Time Slot:</label>
-            <div id="timeSlots" class="grid grid-cols-3 gap-2 md:grid-cols-3 lg:grid-cols-3"></div>
-            <input type="hidden" name="selectedTimeSlot" id="selectedTimeSlot" required>
-
-            <!-- Meeting Reason -->
-            <label class="block text-gray-700 font-medium mt-4">Reason for Meeting:</label>
-            <textarea name="meetingReason" id="meetingReason" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500" rows="3" placeholder="Enter your reason..." required></textarea>
-
-            <!-- Email & Name -->
-            <label class="block text-gray-700 font-medium mt-4">Your Email:</label>
-            <input type="email" name="email" id="email" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Enter your email" required>
-
-            <label class="block text-gray-700 font-medium mt-4">Your Name:</label>
-            <input type="text" name="name" id="name" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Enter your name" required>
-
-            <!-- Submit Button -->
-            <button type="submit" id="submitBtn" class="w-full bg-blue-500 text-white p-2 mt-4 rounded-lg hover:bg-blue-600 transition">Submit</button>
-        </form>
-    </div>
+    <!-- Footer -->
+    <footer class="bg-white shadow-md py-4 px-6 text-center text-gray-600 text-sm8">
+        <p>&copy; 2025 RUET  All Rights Reserved.</p>
+    </footer>
 
     <script>
-        const timeSlots = ["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM"];
-        let selectedSlot = null;
-        let selectedRole = null;
+        emailjs.init('VpSWWhyvh-CEGVQg1'); // Initialize EmailJS
 
-        // Generate Time Slots
-        const slotContainer = document.getElementById("timeSlots");
-        timeSlots.forEach(time => {
-            const button = document.createElement("button");
-            button.textContent = time;
-            button.className = "p-2 bg-gray-300 rounded-lg hover:bg-blue-400 hover:text-white transition duration-300 w-full";
-            button.type = "button";
-            button.onclick = () => selectSlot(button, time);
-            slotContainer.appendChild(button);
+        // Available Time Slots
+        const timeSlots = [
+            '09:00 AM - 10:00 AM',
+            '10:00 AM - 11:00 AM',
+            '11:00 AM - 12:00 PM',
+            '01:00 PM - 02:00 PM',
+            '02:00 PM - 03:00 PM',
+            '03:00 PM - 04:00 PM'
+        ];
+
+        // Available Roles and Departments
+        const roles = ['Student', 'Teacher', 'Alumni'];
+        const departments = ['ETE', 'CSE', 'MTE', 'EEE'];
+
+        // Populate the dropdowns dynamically
+        const timeSlotSelect = document.getElementById('selectedTimeSlot');
+        timeSlots.forEach(slot => {
+            const option = document.createElement('option');
+            option.value = slot;
+            option.textContent = slot;
+            timeSlotSelect.appendChild(option);
         });
 
-        // Select Slot
-        function selectSlot(button, time) {
-            selectedSlot = time;
-            document.querySelectorAll("#timeSlots button").forEach(btn => btn.classList.remove("bg-blue-500", "text-white"));
-            button.classList.add("bg-blue-500", "text-white");
-            document.getElementById("selectedTimeSlot").value = time;
-        }
+        const roleSelect = document.getElementById('selectedRole');
+        roles.forEach(role => {
+            const option = document.createElement('option');
+            option.value = role;
+            option.textContent = role;
+            roleSelect.appendChild(option);
+        });
 
-        // Select Role
-        function selectRole(role, element) {
-            selectedRole = role;
-            document.getElementById("selectedRole").value = role;
-            document.querySelectorAll(".role-card").forEach(card => card.classList.remove("border-blue-500", "shadow-lg"));
-            element.classList.add("border-blue-500", "shadow-lg");
-        }
+        const departmentSelect = document.getElementById('department');
+        departments.forEach(department => {
+            const option = document.createElement('option');
+            option.value = department;
+            option.textContent = department;
+            departmentSelect.appendChild(option);
+        });
 
-        // Form Submission
-        document.getElementById("meetingForm").addEventListener("submit", function(event) {
+        // Form submission logic
+        document.getElementById('form').addEventListener('submit', function(event) {
             event.preventDefault();
-            
-            if (!selectedSlot) {
-                alert("Please select a time slot!");
-                return;
-            }
-            if (!selectedRole) {
-                alert("Please select whether you are a Student or Teacher!");
-                return;
-            }
+            const button = document.getElementById('button');
+            button.textContent = 'Sending...';
+            button.disabled = true;
 
-            document.getElementById("submitBtn").textContent = "Sending...";
+            const serviceID = 'default_service';
+            const templateID = 'template_wd0gedd';
 
-            const templateParams = {
-                subject: document.getElementById("subject").value,
-                department: document.getElementById("department").value,
-                rollNumber: document.getElementById("rollNumber").value,
-                role: selectedRole,
-                timeSlot: selectedSlot,
-                reason: document.getElementById("meetingReason").value,
-                email: document.getElementById("email").value,
-                name: document.getElementById("name").value
-            };
-
-            emailjs.send("service_aya7top", "template_wd0gedd", templateParams)
-                .then(response => {
-                    alert("Meeting request sent successfully!");
-                    document.getElementById("meetingForm").reset();
-                    document.getElementById("submitBtn").textContent = "Submit";
+            emailjs.sendForm(serviceID, templateID, this)
+                .then(() => {
+                    alert('Email sent successfully!');
+                    button.textContent = 'Send Request';
+                    button.disabled = false;
+                    document.getElementById('form').reset();
                 })
-                .catch(error => {
-                    alert("Failed to send email. Please try again.");
-                    console.error("Error:", error);
-                    document.getElementById("submitBtn").textContent = "Submit";
+                .catch((err) => {
+                    alert('Failed to send email. Try again later.');
+                    console.error(err);
+                    button.textContent = 'Send Request';
+                    button.disabled = false;
                 });
         });
     </script>

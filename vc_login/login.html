@@ -1,46 +1,42 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Login + Firebase Database</title>
-        <!-- Cool Google Fonts -->
-        <link rel="preconnect" href="https://fonts.gstatic.com">
-        <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Login  Database</title>
+
+        <!-- Tailwind CSS CDN -->
+        <script src="https://cdn.tailwindcss.com"></script>
+
+        <!-- Google Fonts -->
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;900&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&display=swap" rel="stylesheet">
-        <!-- Our stylesheet -->
-        <link rel="stylesheet" type="text/css" href="index.css">
     </head>
-    <body>
-        <div id="content_container">
-            <div id="form_container">
-                <div id="form_header_container">
-                    <h2 id="form_header"> Login as VC </h2>
-                </div>
+    <body class="flex items-center justify-center min-h-screen bg-gray-100 p-4">
+        <div class="w-full max-w-md bg-white shadow-lg rounded-lg p-6">
+            <h2 class="text-2xl font-extrabold text-center mb-6">Login as VC</h2>
 
-                <div id="form_content_container">
-                    <div id="form_content_inner_container">
-                        <input type="email" id="email" placeholder="Email">
-                        <input type="password" id="password" placeholder="Password">
+            <div class="space-y-4">
+                <input type="email" id="email" placeholder="Email"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="password" id="password" placeholder="Password"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
 
-                        <div id="button_container">
-                            <button onclick="login()">Login</button>
-                            <button onclick="register()">Register</button>
-                        </div>
-
-                    </div>
-                </div>
+            <div class="mt-6 space-y-3">
+                <button onclick="login()"
+                    class="w-full bg-green-700 text-white py-3 rounded-lg hover:bg-green-700 transition">Login</button>
+                <button onclick="register()"
+                    class="w-full bg-gray-600 text-white py-3 rounded-lg hover:bg-gray-700 transition">Register</button>
             </div>
         </div>
+
+        <!-- Firebase SDK -->
+        <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+
+        <!-- Custom JS -->
+        <script src="index.js"></script>
     </body>
-
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
-
-    <!-- Our script must be loaded after firebase references -->
-    <script src="index.js"></script>
-
 </html>

@@ -9,7 +9,7 @@ document.getElementById("applicationForm").addEventListener("submit", function(e
     window.location.href = `NEXT_section\dashboard\dashboard.html?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&position=${encodeURIComponent(position)}`;
 });
 app.use('/uploads', express.static('uploads'));
-const response = await fetch("http://localhost:3000/submit-form", {
+const response = await fetch("vc-ruet-backend.vercel.app/submit-form", {
     method: "POST",
     body: formData,
 });

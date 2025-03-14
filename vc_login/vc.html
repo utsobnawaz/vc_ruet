@@ -25,7 +25,7 @@
 
         async function fetchFiles() {
             try {
-                const response = await fetch("vc-ruet-backend.vercel.app/get-files");
+                const response = await fetch("backend-ten-sigma-28.vercel.app/get-files");
                 const data = await response.json();
                 console.log(data)
                 const fileList = document.getElementById("fileList");
@@ -64,7 +64,7 @@
             const iframe = document.getElementById(`pdfViewer-${id}`);
 
             if (viewerDiv.classList.contains("hidden")) {
-                iframe.src = `vc-ruet-backend.vercel.app/file/${id}`;
+                iframe.src = `backend-ten-sigma-28.vercel.app/file/${id}`;
                 viewerDiv.classList.remove("hidden");
             } else {
                 viewerDiv.classList.add("hidden");

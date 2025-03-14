@@ -43,7 +43,7 @@
             event.preventDefault(); // Prevent default form submission
 
             const formData = new FormData(form); // Capture form data
-            
+
             try {
                 // Send form data to the backend
                 const response = await fetch("https://vc-ruet-backend.vercel.app/submit-form", {
@@ -52,7 +52,9 @@
                 });
 
                 const result = await response.json();
-                
+
+                console.log("Server Response:", result); // Debugging
+
                 // Handle the response
                 if (result.success) {
                     successMessage.classList.remove("hidden");
@@ -65,7 +67,7 @@
                     alert("Error: " + result.message);
                 }
             } catch (error) {
-                console.error(error);
+                console.error("Fetch Error:", error);
                 alert("Something went wrong. Please try again.");
             }
         });

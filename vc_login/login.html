@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Login  Database</title>
+        <title>Login Database</title>
 
         <!-- Tailwind CSS CDN -->
         <script src="https://cdn.tailwindcss.com"></script>
@@ -12,7 +12,13 @@
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;900&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&display=swap" rel="stylesheet">
     </head>
-    <body class="flex items-center justify-center min-h-screen bg-gray-100 p-4">
+    <body class="flex flex-col items-center justify-between min-h-screen bg-gray-100">
+
+        <!-- Header -->
+        <header class="w-full bg-white text-green-800 px-4 py-6 ">
+            <h1 class="text-xl font-bold">Welcome to the VC Login Portal</h1>
+        </header>
+
         <div class="w-full max-w-md bg-white shadow-xl rounded-lg p-8">
             <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Login as VC</h2>
         
@@ -20,13 +26,11 @@
                 <div class="relative">
                     <input type="email" id="email" placeholder="Enter your email"
                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 transition peer">
-                    
                 </div>
         
                 <div class="relative">
                     <input type="password" id="password" placeholder="Enter your password"
                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 transition peer">
-                   
                 </div>
             </div>
         
@@ -41,7 +45,11 @@
                 </button>
             </div>
         </div>
-        
+
+        <!-- Footer -->
+        <footer class="w-full bg-white-800 text-gray-600 text-center py-6 mt-6 ">
+            <p class="text-sm">&copy; 2025 RUET All rights reserved.</p>
+        </footer>
 
         <!-- Firebase SDK -->
         <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>

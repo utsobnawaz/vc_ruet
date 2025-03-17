@@ -6,16 +6,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Application Status</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
 </head>
 
-<body class="bg-gradient-to-r from-blue-50 to-gray-100 flex flex-col items-center justify-center min-h-screen p-6">
+<body class="bg-gradient-to-br from-blue-50 via-white to-gray-200 flex flex-col items-center justify-center min-h-screen p-6">
 
-    <div class="bg-white shadow-xl rounded-lg p-8 w-full max-w-3xl text-center">
-        <h1 class="text-2xl font-semibold text-gray-900 mb-4">📂 Application Status</h1>
+    <div class="glass shadow-2xl rounded-lg p-8 w-full max-w-3xl text-center border border-gray-200">
+        <h1 class="text-3xl font-bold text-gray-900 mb-4 animate-pulse">📂 Application Status</h1>
         <p class="text-gray-600 mb-4">Check the status of your application below.</p>
 
-        <!-- Status List -->
-        <div id="loadingMessage" class="text-gray-500">Loading application statuses...</div>
+        <!-- Loading Animation -->
+        <div id="loadingMessage" class="text-gray-500 animate-pulse">🔄 Loading application statuses...</div>
+        
         <ul id="statusList" class="mt-4 space-y-3"></ul>
     </div>
 
@@ -33,23 +56,39 @@
                 statusList.innerHTML = "";
 
                 if (data.success && data.files.length > 0) {
-                    data.files.forEach(file => {
+                    data.files.forEach((file, index) => {
                         const listItem = document.createElement("li");
-                        listItem.className = "bg-gray-100 hover:bg-gray-200 transition duration-200 rounded-lg p-3 shadow-sm";
+                        listItem.className = "bg-white hover:bg-blue-100 transition duration-300 rounded-lg p-3 shadow-md flex justify-between items-center fade-in";
+                        listItem.style.animationDelay = `${index * 0.1}s`;
+
+                        // Determine button color based on status
+                        let statusClass = "bg-gray-300 text-gray-800"; // Default (Undefined)
+                        if (file.status.toLowerCase() === "approved") {
+                            statusClass = "bg-green-500 text-white";
+                        }
+
+                        if (file.status.toLowerCase() === "rejected") {
+                            statusClass = "bg-red-500 text-white";
+                        }
+                        if (file.status.toLowerCase() === "under_processing") {
+                            statusClass = "bg-blue-500 text-white";
+                        }
 
                         listItem.innerHTML = `
-                            <span class="font-semibold">${file.filename}</span>
-                            <span class="ml-2 text-sm text-gray-600">${file.status}</span>
+                            <span class="font-semibold text-blue-800">${file.filename}</span>
+                            <span class="px-3 py-1 rounded-full text-sm font-semibold ${statusClass} shadow-md hover:shadow-lg transition-transform transform hover:scale-105 cursor-pointer">
+                                ${file.status}
+                            </span>
                         `;
 
                         statusList.appendChild(listItem);
                     });
                 } else {
-                    statusList.innerHTML = "<p class='text-red-500'>No files found.</p>";
+                    statusList.innerHTML = "<p class='text-red-500 fade-in'>🚫 No files found.</p>";
                 }
             } catch (error) {
                 console.error("❌ Error fetching status:", error);
-                document.getElementById("loadingMessage").innerHTML = "<p class='text-red-500'>Failed to load statuses.</p>";
+                document.getElementById("loadingMessage").innerHTML = "<p class='text-red-500'>⚠️ Failed to load statuses.</p>";
             }
         }
     </script>

@@ -115,7 +115,11 @@
             submitButton.classList.add("opacity-50");
 
             var formData = new FormData(this);
-            var formDataString = new URLSearchParams([...formData].map(([k, v]) => [k, encodeURIComponent(v)])).toString();
+var formObject = Object.fromEntries(formData.entries());
+var formDataString = Object.keys(formObject)
+    .map(key => `${key}=${formObject[key]}`)
+    .join("&");
+
 
             fetch("https://script.google.com/macros/s/AKfycbzWV9w6K3AWz_3vxOn72Bt0G-LPHTYoy2cn55b-L9rZ1KAiaQb2hd2MX_9rZ9VY3j1Z/exec", {
                 redirect: "follow",

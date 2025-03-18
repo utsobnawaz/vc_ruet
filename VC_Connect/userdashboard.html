@@ -36,9 +36,7 @@
         <h1 class="text-3xl font-bold text-gray-900 mb-4 animate-pulse">📂 Application Status</h1>
         <p class="text-gray-600 mb-4">Check the status of your application below.</p>
 
-        <!-- Loading Animation -->
         <div id="loadingMessage" class="text-gray-500 animate-pulse">🔄 Loading application statuses...</div>
-        
         <ul id="statusList" class="mt-4 space-y-3"></ul>
     </div>
 
@@ -52,7 +50,6 @@
                 const statusList = document.getElementById("statusList");
                 const loadingMessage = document.getElementById("loadingMessage");
                 loadingMessage.style.display = "none";
-
                 statusList.innerHTML = "";
 
                 if (data.success && data.files.length > 0) {
@@ -61,26 +58,16 @@
                         listItem.className = "bg-white hover:bg-blue-100 transition duration-300 rounded-lg p-3 shadow-md flex justify-between items-center fade-in";
                         listItem.style.animationDelay = `${index * 0.1}s`;
 
-                        // Determine button color based on status
-                        let statusClass = "bg-gray-300 text-gray-800"; // Default (Undefined)
-                        if (file.status.toLowerCase() === "approved") {
-                            statusClass = "bg-green-500 text-white";
-                        }
-
-                        if (file.status.toLowerCase() === "rejected") {
-                            statusClass = "bg-red-500 text-white";
-                        }
-                        if (file.status.toLowerCase() === "under_processing") {
-                            statusClass = "bg-blue-500 text-white";
-                        }
+                        let statusClass = "bg-gray-300 text-gray-800";
+                        if (file.status.toLowerCase() === "approved") statusClass = "bg-green-500 text-white";
+                        if (file.status.toLowerCase() === "rejected") statusClass = "bg-red-500 text-white";
+                        if (file.status.toLowerCase() === "under_processing") statusClass = "bg-blue-500 text-white";
 
                         listItem.innerHTML = `
                             <span class="font-semibold text-blue-800">${file.filename}</span>
-                            <span class="px-3 py-1 rounded-full text-sm font-semibold ${statusClass} shadow-md hover:shadow-lg transition-transform transform hover:scale-105 cursor-pointer">
-                                ${file.status}
-                            </span>
+                            <span class="px-3 py-1 rounded-full text-sm font-semibold ${statusClass} shadow-md">${file.status}</span>
+                            <button class="ml-4 bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-700" onclick="askForPasskey('${file._id}')">View Feedback</button>
                         `;
-
                         statusList.appendChild(listItem);
                     });
                 } else {
@@ -89,6 +76,32 @@
             } catch (error) {
                 console.error("❌ Error fetching status:", error);
                 document.getElementById("loadingMessage").innerHTML = "<p class='text-red-500'>⚠️ Failed to load statuses.</p>";
+            }
+        }
+
+        function askForPasskey(fileId) {
+            const passkey = prompt("Enter your passkey to view feedback:");
+            if (passkey) {
+                fetchFeedback(fileId, passkey);
+            }
+        }
+
+        async function fetchFeedback(fileId, passkey) {
+            try {
+                const response = await fetch('https://backend-ten-sigma-28.vercel.app/get-feedback', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ fileId, passkey })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    alert(`Feedback: ${data.feedback}`);
+                } else {
+                    alert("Incorrect passkey or no feedback available.");
+                }
+            } catch (error) {
+                console.error("❌ Error fetching feedback:", error);
+                alert("An error occurred while fetching feedback.");
             }
         }
     </script>

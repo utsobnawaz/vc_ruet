@@ -12,15 +12,16 @@
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;900&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&display=swap" rel="stylesheet">
     </head>
-    <body class="flex flex-col items-center justify-between min-h-screen bg-gray-100">
+    <body class="bg-gradient-to-br from-blue-50 via-white to-gray-200 flex flex-col min-h-screen items-center p-4 sm:p-6">
 
         <!-- Header -->
-        <header class="w-full bg-white text-green-800 px-4 py-6 ">
-            <h1 class="text-xl font-bold">Welcome to the VC Login Portal</h1>
+        <header class="w-full bg-white text-green-800 p-6 shadow-md rounded-lg flex justify-between items-center">
+            <h1 class="text-xl sm:text-2xl font-bold">Welcome to the VC Login Portal</h1>
         </header>
 
-        <div class="w-full max-w-md bg-white shadow-xl rounded-lg p-8">
+        <div class="w-full max-w-md bg-white shadow-xl rounded-lg p-8 mt-10">
             <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Login as VC</h2>
+        
         
             <div class="space-y-5">
                 <div class="relative">
@@ -39,7 +40,7 @@
                     class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold shadow-md hover:bg-green-700 transition transform hover:scale-105 active:scale-95">
                     Login
                 </button>
-                <button onclick="register()"
+               <button onclick="register()"
                     class="w-full bg-gray-700 text-white py-3 rounded-lg font-semibold shadow-md hover:bg-gray-800 transition transform hover:scale-105 active:scale-95">
                     Register
                 </button>

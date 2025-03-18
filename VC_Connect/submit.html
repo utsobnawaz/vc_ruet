@@ -6,14 +6,15 @@
     <title>Application Form</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-white-800 min-h-screen flex flex-col justify-between items-center">
+<body class="bg-white min-h-screen flex flex-col justify-between items-center">
 
     <!-- Header -->
-    <header class="w-full bg-white text-green-800 py-4 px-4 py-6 text-2xl font-semibold shadow-md">
+    <header class="w-full bg-white text-green-800 py-6 px-4 text-2xl font-semibold shadow-md text-center">
         Welcome to the Application Portal
     </header>
 
-    <div class="container bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
+    <!-- Application Form -->
+    <div class="container bg-white p-8 rounded-lg shadow-lg w-full max-w-lg mt-8">
         <h2 class="text-2xl font-semibold text-center text-gray-800 mb-6">Submit Your Application</h2>
         <form id="applicationForm" class="space-y-4" enctype="multipart/form-data">
             
@@ -51,6 +52,7 @@
         &copy; 2025 RUET All Rights Reserved.
     </footer>
 
+    <!-- JavaScript for Form Submission -->
     <script>
         const form = document.getElementById("applicationForm");
         const successMessage = document.getElementById("successMessage");
@@ -62,15 +64,15 @@
             const formData = new FormData(form); // Create FormData object with form data
 
             try {
-                // Send form data to the backend
-                const response = await fetch("https://backend-ten-sigma-28.vercel.app/upload-pdf", {
+                // ✅ Send form data to the backend
+                const response = await fetch("https://backend-ten-sigma-28.vercel.app/submit-form", {
                     method: "POST",
                     body: formData,
                 });
 
                 const result = await response.json();
                 
-                // Handle the response from the server
+                // ✅ Handle the response from the server
                 if (result.success) {
                     successMessage.classList.remove("hidden"); // Show success message with animation
                     successMessage.classList.add("animate-fadeIn");
@@ -88,6 +90,7 @@
         });
     </script>
 
+    <!-- Animation Styles -->
     <style>
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-20px); }

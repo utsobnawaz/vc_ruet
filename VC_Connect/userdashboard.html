@@ -28,25 +28,25 @@
   </style>
 </head>
 
-<body class="bg-gradient-to-br from-blue-50 via-white to-gray-200 flex flex-col min-h-screen items-center">
+<body class="bg-gradient-to-br from-blue-50 via-white to-gray-200 flex flex-col min-h-screen items-center p-4 sm:p-6">
 
-  <header class="w-full bg-white text-green-800 p-6  shadow-md">
-    <h1 class="text-2xl font-bold">📂 User Dashboard</h1>
+  <header class="w-full bg-white text-green-800 p-6  shadow-md rounded-lg">
+    <h1 class="text-xl sm:text-2xl font-bold">📂 Application Status Dashboard</h1>
   </header>
 
-  <main class="flex-grow w-full max-w-6xl p-6">
-    <div class="glass shadow-2xl rounded-lg p-6 text-center border border-gray-300 fade-in">
-      <h2 class="text-3xl font-bold text-gray-900 mb-4 animate-pulse">Application Status</h2>
-      <p class="text-gray-600 mb-4">View your application statuses in the table below.</p>
+  <main class="flex-grow w-full max-w-6xl p-4 sm:p-6">
+    <div class="glass shadow-2xl rounded-lg p-4 sm:p-6 text-center border border-gray-300 fade-in">
+      <h2 class="text-xl sm:text-3xl font-bold text-gray-900 mb-4 animate-pulse">Application Status</h2>
+      <p class="text-gray-600 mb-4 text-sm sm:text-base">View your application statuses in the table below.</p>
       <div id="loadingMessage" class="text-gray-500 animate-pulse">🔄 Loading application statuses...</div>
 
       <div class="overflow-x-auto mt-6">
-        <table class="w-full bg-white shadow-md rounded-lg text-left">
+        <table class="w-full bg-white shadow-md rounded-lg text-left text-xs sm:text-base">
           <thead class="bg-gray-100">
             <tr>
-              <th class="p-3 border-b">Filename</th>
-              <th class="p-3 border-b">Status</th>
-              <th class="p-3 border-b">Feedback</th>
+              <th class="p-2 sm:p-3 border-b">Filename</th>
+              <th class="p-2 sm:p-3 border-b">Status</th>
+              <th class="p-2 sm:p-3 border-b">Feedback</th>
             </tr>
           </thead>
           <tbody id="statusTable" class="divide-y"></tbody>
@@ -57,16 +57,16 @@
 
   <!-- Feedback Modal -->
   <div id="feedbackModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-    <div class="bg-white p-5 sm:p-6 rounded-lg shadow-xl max-w-md w-full text-center">
-      <h2 class="text-lg sm:text-xl font-bold mb-3 text-gray-800">📋 Feedback</h2>
-      <p id="feedbackContent" class="text-gray-700 mb-4"></p>
+    <div class="bg-white p-4 sm:p-6 rounded-lg shadow-xl max-w-md w-full text-center">
+      <h2 class="text-sm sm:text-xl font-bold mb-3 text-gray-800">📋 Feedback</h2>
+      <p id="feedbackContent" class="text-gray-700 mb-4 text-xs sm:text-base"></p>
       <div class="text-right">
-        <button onclick="closeFeedback()" class="bg-blue-600 text-white px-4 py-2 rounded text-sm sm:text-base hover:bg-blue-700">Close</button>
+        <button onclick="closeFeedback()" class="bg-blue-600 text-white px-3 py-2 rounded text-xs sm:text-base hover:bg-blue-700">Close</button>
       </div>
     </div>
   </div>
 
-  <footer class="bg-white text-gray-600 text-center py-4 w-full">
+  <footer class="bg-white text-gray-600 text-center py-4 w-full text-xs sm:text-base">
     <p>&copy; 2025 RUET All rights reserved.</p>
   </footer>
 
@@ -90,10 +90,10 @@
             if (file.status.toLowerCase() === "under_processing") statusClass = "bg-blue-500 text-white";
 
             const row = `
-              <tr class="fade-in">
-                <td class="p-3 border-b">${file.filename}</td>
-                <td class="p-3 border-b"><span class="px-3 py-1 rounded-full text-xs font-semibold ${statusClass}">${file.status}</span></td>
-                <td class="p-3 border-b"><button class="bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-700" onclick="askForPasskey('${file._id}')">View Feedback</button></td>
+              <tr class="fade-in text-xs sm:text-base">
+                <td class="p-2 sm:p-3 border-b">${file.filename}</td>
+                <td class="p-2 sm:p-3 border-b"><span class="px-3 py-1 rounded-full font-semibold ${statusClass}">${file.status}</span></td>
+                <td class="p-2 sm:p-3 border-b"><button class="bg-purple-500 text-white px-2 sm:px-3 py-1 rounded hover:bg-purple-700" onclick="askForPasskey('${file._id}')">View Feedback</button></td>
               </tr>
             `;
             statusTable.innerHTML += row;
@@ -121,7 +121,6 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ fileId, passkey })
         });
-
         const data = await response.json();
         if (data.success) {
           showFeedback(data.feedback);

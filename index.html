@@ -1,51 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RUET VC Connect</title>
-
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- AOS Animation Library -->
-    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
-
-    <!-- Favicon (RUET Logo) -->
-    <link rel="icon" href="image/image.png" type="image/png">
-
-    <!-- Open Graph Meta Tags for Social Sharing -->
-    <meta property="og:title" content="RUET VC Connect">
-    <meta property="og:description" content="Official portal to connect with the Vice-Chancellor of RUET. Schedule appointments, apply online, and stay updated.">
-    <meta property="og:image" content="https://yourwebsite.com/image/image.png"> <!-- Replace with your live image URL -->
-    <meta property="og:url" content="https://yourwebsite.com"> <!-- Replace with your website URL -->
-    <meta property="og:type" content="website">
-
-    <!-- Twitter Card Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="RUET VC Connect">
-    <meta name="twitter:description" content="Connect with the Vice-Chancellor of RUET. Apply, track applications, and more.">
-    <meta name="twitter:image" content="https://yourwebsite.com/image/image.png"> <!-- Replace with your live image URL -->
-
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script> <!-- AOS Animation library -->
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet"> <!-- AOS Animation CSS -->
     <style>
+        /* Additional Custom Styles */
         .box-shadow-hover:hover {
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             transition: box-shadow 0.3s ease-in-out;
         }
-
         .bg-hover:hover {
             background-color: #4CAF50;
             transition: background-color 0.3s ease;
         }
-
         .rounded-box {
             border-radius: 16px;
         }
     </style>
 </head>
-
 <body class="bg-gradient-to-r from-gray-100 to-gray-200 text-gray-900">
 
     <!-- Header -->
@@ -67,65 +43,76 @@
             <div class="bg-gray-50 p-6 rounded-lg shadow-md text-center box-shadow-hover" data-aos="fade-right" data-aos-delay="300">
                 <h3 class="text-xl font-bold text-blue-800">Office Hours</h3>
                 <p class="mt-2 text-gray-700">For confirming your schedule, click below</p>
-                <a href="../VC_Connect/appointment.html"
-                    class="mt-4 inline-block bg-blue-700 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transform hover:scale-105 transition duration-300">
+                <a href="../VC_Connect/appointment.html" 
+                   class="mt-4 inline-block bg-blue-700 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transform hover:scale-105 transition duration-300">
                     Offline Appointment
                 </a>
             </div>
+
 
             <!-- Online Application -->
             <div class="bg-gray-50 p-6 rounded-lg shadow-md text-center box-shadow-hover" data-aos="fade-left" data-aos-delay="300">
                 <h3 class="text-xl font-bold text-blue-800">Online Application</h3>
                 <p class="mt-2 text-gray-700">For submitting your application, click below</p>
-                <a href="../VC_Connect/Datacollect.html"
-                    class="mt-4 inline-block bg-blue-700 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transform hover:scale-105 transition duration-300">
+                <a href="../VC_Connect/Datacollect.html" 
+                   class="mt-4 inline-block bg-blue-700 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transform hover:scale-105 transition duration-300">
                     Apply Online
                 </a>
             </div>
-
             <!-- User's Dashboard Section -->
-            <div class="mt-10 p-6 bg-gray-50 shadow-md rounded-lg text-center box-shadow-hover" data-aos="fade-up" data-aos-delay="400">
-                <h3 class="text-2xl font-bold text-green-800">User's Dashboard</h3>
-                <p class="mt-2 text-gray-700">Access your personal dashboard to track application status.</p>
-                <a href="../VC_Connect/userdashboard.html"
-                    class="mt-4 inline-block bg-green-700 text-white px-6 py-3 rounded-lg hover:bg-green-700 transform hover:scale-105 transition duration-300">
-                    Go to Dashboard
-                </a>
-            </div>
+<div class="mt-10 p-6 bg-gray-50 shadow-md rounded-lg text-center box-shadow-hover" data-aos="fade-up" data-aos-delay="400">
+    <h3 class="text-2xl font-bold text-green-800">User's Dashboard</h3>
+    <p class="mt-2 text-gray-700">
+        Access your personal dashboard to track application status.
+    </p>
+    <a href="../VC_Connect/userdashboard.html" 
+       class="mt-4 inline-block bg-green-700 text-white px-6 py-3 rounded-lg hover:bg-green-700 transform hover:scale-105 transition duration-300">
+        Go to Dashboard
+    </a>
+</div>
+<!-- Sign in as VC Section -->
+<div class="mt-10 p-6 bg-gray-50 shadow-md rounded-lg text-center box-shadow-hover" data-aos="fade-up" data-aos-delay="500">
+    <h3 class="text-2xl font-bold text-green-800">Vice-Chancellor's Portal</h3>
+    <p class="mt-2 text-gray-700">
+        Authorized access for the Vice-Chancellor to review applications.
+    </p>
+    <a href="../vc_login/login.html" 
+       class="mt-4 inline-block bg-green-700 text-white px-6 py-3 rounded-lg hover:bg-green-700 transform hover:scale-105 transition duration-300">
+        Sign in as VC
+    </a>
+</div>
 
-            <!-- VC Portal Section -->
-            <div class="mt-10 p-6 bg-gray-50 shadow-md rounded-lg text-center box-shadow-hover" data-aos="fade-up" data-aos-delay="500">
-                <h3 class="text-2xl font-bold text-green-800">Vice-Chancellor's Portal</h3>
-                <p class="mt-2 text-gray-700">Authorized access for the Vice-Chancellor to review applications.</p>
-                <a href="../vc_login/login.html"
-                    class="mt-4 inline-block bg-green-700 text-white px-6 py-3 rounded-lg hover:bg-green-700 transform hover:scale-105 transition duration-300">
-                    Sign in as VC
-                </a>
-            </div>
+            
         </div>
     </main>
 
     <!-- VC Speech Section -->
     <section class="max-w-6xl mx-auto mt-10 p-8 bg-white shadow-lg rounded-lg">
         <h2 class="text-2xl font-bold text-center text-green-800 mb-6" data-aos="fade-up">Message from the Vice-Chancellor</h2>
-
+        
         <div class="flex flex-col md:flex-row items-center bg-gray-50 p-6 rounded-lg shadow-md">
-            <img src="../image/photo170.png" alt="Vice-Chancellor of RUET"
-                class="w-40 h-40 object-cover rounded-full border-4 border-green-600 shadow-md mb-4 md:mb-0 md:mr-6">
-
+            <!-- VC Image -->
+            <img src="../image/photo170.png" alt="Vice-Chancellor of RUET" 
+                 class="w-40 h-40 object-cover rounded-full border-4 border-green-600 shadow-md mb-4 md:mb-0 md:mr-6">
+            
+            <!-- VC Message -->
             <div class="text-gray-800 leading-relaxed text-justify">
                 <p class="mb-4">
                     <span class="text-lg font-semibold text-green-700">"Welcome to RUET, a beacon of excellence in engineering education, research, and innovation."</span>
                     Our university started its journey in 1964, evolved into an institute in 1986, and became a full-fledged university in 2003.
                 </p>
-                <p class="mb-4">As Vice-Chancellor, I take immense pride in leading an institution that cultivates bright minds, fosters research, and pushes the boundaries of technology.</p>
-                <p class="italic font-medium text-green-700">— <span class="text-green-800 font-bold">S M Abdur Razzak, PhD</span>, Vice-Chancellor, RUET</p>
+                <p class="mb-4">
+                    As Vice-Chancellor, I take immense pride in leading an institution that cultivates bright minds, fosters research, and pushes the boundaries of technology.
+                </p>
+                <p class="italic font-medium text-green-700">
+                    — <span class="text-green-800 font-bold">S M Abdur Razzak, PhD</span>, Vice-Chancellor, RUET
+                </p>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="bg-white shadow-md py-4 px-6 text-center text-gray-600 text-sm">
+    <footer class="bg-white shadow-md py-4 px-6 text-center text-gray-600 text-sm8">
         <p>&copy; 2025 RUET VC Connect. All Rights Reserved.</p>
     </footer>
 

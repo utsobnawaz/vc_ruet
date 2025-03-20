@@ -17,11 +17,11 @@
         <!-- Header -->
         <header class="w-full bg-white text-green-800 p-6 shadow-md rounded-lg flex justify-between items-center">
             <h1 class="text-xl sm:text-2xl font-bold">Welcome to the VC Login Portal</h1>
+            <a href="/" class="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold shadow-md hover:bg-green-700 transition transform hover:scale-105 active:scale-95">Home</a>
         </header>
 
-        <div class="w-full max-w-md bg-white shadow-xl rounded-lg p-8 mt-10">
-            <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Login as VC</h2>
-        
+        <div class="w-full max-w-md bg-white shadow-xl rounded-lg p-8 mt-10 transition-all transform hover:shadow-2xl hover:scale-105">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-6 animate-fade-in">Login as VC</h2>
         
             <div class="space-y-5">
                 <div class="relative">
@@ -40,15 +40,11 @@
                     class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold shadow-md hover:bg-green-700 transition transform hover:scale-105 active:scale-95">
                     Login
                 </button>
-               <button onclick="register()"
-                    class="w-full bg-gray-700 text-white py-3 rounded-lg font-semibold shadow-md hover:bg-gray-800 transition transform hover:scale-105 active:scale-95">
-                    Register
-                </button>
             </div>
         </div>
 
         <!-- Footer -->
-        <footer class="w-full bg-white-800 text-gray-600 text-center py-6 mt-6 ">
+        <footer class="w-full text-gray-600 text-center py-6 mt-6">
             <p class="text-sm">&copy; 2025 RUET All rights reserved.</p>
         </footer>
 
@@ -59,5 +55,15 @@
 
         <!-- Custom JS -->
         <script src="index.js"></script>
+
+        <style>
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(-10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .animate-fade-in {
+                animation: fadeIn 1s ease-in-out;
+            }
+        </style>
     </body>
 </html>

@@ -6,47 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VC Panel - Manage Applications</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    /* Full-screen PDF modal */
-    .pdf-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-    }
-
-    .pdf-modal iframe {
-      width: 90%;
-      height: 80vh;
-      background: white;
-      border-radius: 8px;
-    }
-
-    .pdf-close {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      background: red;
-      color: white;
-      padding: 5px 10px;
-      font-size: 14px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-  </style>
 </head>
 
 <body class="bg-gradient-to-br from-gray-100 via-white to-gray-300 flex flex-col min-h-screen items-center p-6">
   <header class="w-full bg-white text-green-800 p-6 shadow-md rounded-lg flex justify-between items-center">
     <h1 class="text-2xl font-bold tracking-wide">Manage Applications</h1>
-    <a href="../index.html"
-      class="bg-green-700 text-white px-4 py-2 text-sm rounded-md hover:bg-green-800 transition-all shadow">
+    <a href="../index.html" class="bg-green-700 text-white px-4 py-2 text-sm rounded-md hover:bg-green-800 transition-all shadow">
       Home
     </a>
   </header>
@@ -63,10 +28,15 @@
     <p class="text-xs">&copy; 2025 RUET All rights reserved.</p>
   </footer>
 
-  <!-- Full-screen PDF modal -->
-  <div id="pdfModal" class="pdf-modal">
-    <button class="pdf-close" onclick="closePdf()">Close</button>
-    <iframe id="pdfViewer"></iframe>
+  <!-- PDF Modal -->
+  <div id="pdfModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden">
+    <div class="bg-white w-full max-w-4xl h-5/6 rounded-lg shadow-lg overflow-hidden flex flex-col">
+      <div class="flex justify-between items-center bg-gray-800 text-white p-3">
+        <h2 class="text-lg font-semibold">PDF Viewer</h2>
+        <button onclick="closePDF()" class="text-white bg-red-500 px-3 py-1 rounded hover:bg-red-600">Close</button>
+      </div>
+      <iframe id="pdfViewer" class="w-full flex-1 border-none"></iframe>
+    </div>
   </div>
 
   <script>
@@ -133,12 +103,21 @@
       const pdfViewer = document.getElementById("pdfViewer");
       const pdfModal = document.getElementById("pdfModal");
 
-      pdfViewer.src = `https://backend-ten-sigma-28.vercel.app/file/${id}`;
-      pdfModal.style.display = "flex"; // Show modal
+      // Clear previous PDF first
+      pdfViewer.src = "";
+
+      // Show modal immediately
+      pdfModal.style.display = "flex";
+
+      // Introduce a short delay before loading the new PDF
+      setTimeout(() => {
+        pdfViewer.src = `https://backend-ten-sigma-28.vercel.app/file/${id}`;
+      }, 300); // Delay of 300ms ensures the old PDF is cleared
     }
 
-    function closePdf() {
+    function closePDF() {
       document.getElementById("pdfModal").style.display = "none";
+      document.getElementById("pdfViewer").src = "";
     }
 
     function toggleFeedback(id) {
@@ -155,13 +134,8 @@
           body: JSON.stringify({ id, status })
         });
         const data = await response.json();
-        if (data.success) {
-          alert("Status updated successfully!");
-        } else {
-          alert("Failed to update status.");
-        }
+        alert(data.success ? "Status updated successfully!" : "Failed to update status.");
       } catch (error) {
-        console.error("❌ Error submitting status:", error);
         alert("An error occurred while submitting the status.");
       }
     }
@@ -169,10 +143,7 @@
     async function sendFeedback(id) {
       const feedbackBox = document.querySelector(`#feedback-${id} textarea`);
       const feedback = feedbackBox.value.trim();
-      if (!feedback) {
-        alert("Please enter feedback before sending.");
-        return;
-      }
+      if (!feedback) return alert("Please enter feedback before sending.");
 
       try {
         const response = await fetch('https://backend-ten-sigma-28.vercel.app/submit-feedback', {
@@ -181,13 +152,8 @@
           body: JSON.stringify({ id, feedback })
         });
         const data = await response.json();
-        if (data.success) {
-          alert("Feedback sent successfully!");
-        } else {
-          alert("Please update your feedback for sending again!!");
-        }
+        alert(data.success ? "Feedback sent successfully!" : "Failed to send feedback.");
       } catch (error) {
-        console.error("❌ Error sending feedback:", error);
         alert("An error occurred while sending feedback.");
       }
     }

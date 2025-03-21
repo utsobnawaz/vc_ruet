@@ -8,40 +8,33 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    .fade-in {
-      animation: fadeIn 0.6s ease-out;
-    }
-    .glass {
-      background: rgba(255, 255, 255, 0.3);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
+    .fade-in { animation: fadeIn 0.6s ease-out; }
+    .glass { background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(10px); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
   </style>
 </head>
 
 <body class="bg-gradient-to-br from-blue-50 via-white to-gray-200 flex flex-col min-h-screen items-center p-4 sm:p-6">
 
- <header class="w-full bg-white text-green-800 p-6 shadow-md rounded-lg flex justify-between items-center">
-  <h1 class="text-xl sm:text-2xl font-bold">📂 Application Status Dashboard</h1>
-  <a href="../index.html" class="bg-green-800 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition shadow-lg">
-    Home
-  </a>
-</header>
-
+  <header class="w-full bg-white text-green-800 p-6 shadow-md rounded-lg flex justify-between items-center">
+    <h1 class="text-xl sm:text-2xl font-bold">📂 Application Status Dashboard</h1>
+    <a href="../index.html" class="bg-green-800 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition shadow-lg">
+      Home
+    </a>
+  </header>
 
   <main class="flex-grow w-full max-w-6xl p-4 sm:p-6">
     <div class="glass shadow-2xl rounded-lg p-4 sm:p-6 text-center border border-gray-300 fade-in">
       <h2 class="text-xl sm:text-3xl font-bold text-gray-900 mb-4 animate-pulse">Application Status</h2>
       <p class="text-gray-600 mb-4 text-sm sm:text-base">View your application statuses in the table below.</p>
+
+      <!-- Search Bar -->
+      <input type="text" id="searchInput" placeholder="🔍 Search by filename..."
+        class="w-full sm:w-1/2 p-2 border border-gray-300 rounded-lg mb-4 text-sm sm:text-base"
+        onkeyup="filterTable()">
+
       <div id="loadingMessage" class="text-gray-500 animate-pulse">🔄 Loading application statuses...</div>
 
       <div class="overflow-x-auto mt-6">
@@ -87,6 +80,9 @@
         statusTable.innerHTML = "";
 
         if (data.success && data.files.length > 0) {
+          // Sorting by latest uploaded files first
+          data.files.sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate));
+
           data.files.forEach((file) => {
             let statusClass = "bg-gray-300 text-gray-800";
             if (file.status.toLowerCase() === "approved") statusClass = "bg-green-500 text-white";
@@ -95,7 +91,7 @@
 
             const row = `
               <tr class="fade-in text-xs sm:text-base">
-                <td class="p-2 sm:p-3 border-b">${file.filename}</td>
+                <td class="p-2 sm:p-3 border-b filename">${file.filename}</td>
                 <td class="p-2 sm:p-3 border-b"><span class="px-3 py-1 rounded-full font-semibold ${statusClass}">${file.status}</span></td>
                 <td class="p-2 sm:p-3 border-b"><button class="bg-purple-500 text-white px-2 sm:px-3 py-1 rounded hover:bg-purple-700" onclick="askForPasskey('${file._id}')">View Feedback</button></td>
               </tr>
@@ -144,6 +140,14 @@
 
     function closeFeedback() {
       document.getElementById('feedbackModal').classList.add('hidden');
+    }
+
+    function filterTable() {
+      const searchValue = document.getElementById("searchInput").value.toLowerCase();
+      document.querySelectorAll("#statusTable tr").forEach(row => {
+        const filename = row.querySelector(".filename")?.textContent.toLowerCase() || "";
+        row.style.display = filename.includes(searchValue) ? "" : "none";
+      });
     }
   </script>
 </body>

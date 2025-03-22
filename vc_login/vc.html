@@ -8,29 +8,31 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gradient-to-br from-gray-100 via-white to-gray-300 flex flex-col min-h-screen items-center p-6">
+<body class="bg-gradient-to-br from-gray-100 via-white to-gray-300 flex flex-col min-h-screen items-center p-4">
   <!-- Header -->
-  <header class="w-full bg-white text-green-800 p-6 shadow-md rounded-lg flex justify-between items-center">
-    <h1 class="text-2xl font-bold tracking-wide">Manage Applications</h1>
-    <div class="flex gap-4 items-center">
+  <header class="w-full bg-white text-green-800 p-4 shadow-md rounded-lg flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+    <h1 class="text-xl sm:text-2xl font-bold tracking-wide">Manage Applications</h1>
+    <div class="flex gap-3 items-center flex-wrap">
       <button onclick="toggleEmergency()"
-        class="bg-red-600 text-white px-4 py-2 text-sm rounded-md hover:bg-red-700 transition-all shadow">
+        class="bg-red-600 text-white px-4 py-2 text-sm rounded-md hover:bg-red-700 transition-all shadow whitespace-nowrap">
         🚨 Emergency <span id="toggleIcon">▼</span>
       </button>
       <a href="../index.html"
-        class="bg-green-700 text-white px-4 py-2 text-sm rounded-md hover:bg-green-800 transition-all shadow">Home</a>
+        class="bg-green-700 text-white px-4 py-2 text-sm rounded-md hover:bg-green-800 transition-all shadow whitespace-nowrap">
+        Home
+      </a>
     </div>
   </header>
 
   <!-- Admin Emergency Dropdown -->
-  <div id="adminEmergencyContent" class="bg-red-800 shadow-lg rounded-lg p-6 w-full max-w-7xl mt-4 hidden">
-    <h2 class="text-xl font-semibold text-white mb-3">🚨 Emergency Applications</h2>
+  <div id="adminEmergencyContent" class="bg-red-800 shadow-lg rounded-lg p-4 w-full max-w-7xl mt-4 hidden">
+    <h2 class="text-lg sm:text-xl font-semibold text-white mb-3">🚨 Emergency Applications</h2>
     <ul id="adminEmergencyList" class="space-y-4"></ul>
   </div>
 
   <!-- Normal Applications -->
-  <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-7xl mt-6">
-    <h1 class="text-2xl font-semibold text-gray-900 mb-4">📂 Applications Overview</h1>
+  <div class="bg-white shadow-lg rounded-lg p-4 w-full max-w-7xl mt-6">
+    <h1 class="text-xl sm:text-2xl font-semibold text-gray-900 mb-4">📂 Applications Overview</h1>
     <p class="text-gray-600 mb-4 text-sm">Review, filter by category, update status, and provide feedback efficiently.</p>
 
     <!-- Category Filter -->
@@ -42,7 +44,9 @@
     </div>
 
     <div id="loadingMessage" class="text-gray-500">Loading applications...</div>
-    <ul id="fileList" class="mt-4 space-y-4"></ul>
+    <div class="overflow-x-auto">
+      <ul id="fileList" class="mt-4 space-y-4"></ul>
+    </div>
   </div>
 
   <!-- Footer -->
@@ -51,17 +55,17 @@
   </footer>
 
   <!-- PDF Modal -->
-  <div id="pdfModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden">
+  <div id="pdfModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden p-2">
     <div class="bg-white w-full max-w-4xl h-5/6 rounded-lg shadow-lg overflow-hidden flex flex-col">
       <div class="flex justify-between items-center bg-gray-800 text-white p-3">
-        <h2 class="text-lg font-semibold">PDF Viewer</h2>
+        <h2 class="text-base sm:text-lg font-semibold">PDF Viewer</h2>
         <button onclick="closePDF()" class="text-white bg-red-500 px-3 py-1 rounded hover:bg-red-600">Close</button>
       </div>
       <iframe id="pdfViewer" class="w-full flex-1 border-none"></iframe>
     </div>
   </div>
 
-  <script>
+<script>
     document.addEventListener("DOMContentLoaded", fetchFiles);
 
     function toggleEmergency() {

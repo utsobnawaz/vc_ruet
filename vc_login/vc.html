@@ -37,11 +37,12 @@
 
     <!-- Category Filter -->
     <div class="mb-4">
-      <label class="bg-purple-700 p-2 rounded font-bold text-white mr-2">Filter by Category:</label>
-      <select id="categoryFilter" class="p-2 border rounded-md" onchange="filterByCategory()">
+      <label class="bg-purple-700 p-2 rounded font-bold text-white">Filter by Category:</label>
+      <select id="categoryFilter" class="p-2 border rounded-md ml-4" onchange="filterByCategory()">
         <option value="all">All</option>
       </select>
     </div>
+    
 
     <div id="loadingMessage" class="text-gray-500">Loading applications...</div>
     <div class="overflow-x-auto">

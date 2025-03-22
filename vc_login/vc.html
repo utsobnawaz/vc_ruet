@@ -9,21 +9,43 @@
 </head>
 
 <body class="bg-gradient-to-br from-gray-100 via-white to-gray-300 flex flex-col min-h-screen items-center p-6">
+  <!-- Header -->
   <header class="w-full bg-white text-green-800 p-6 shadow-md rounded-lg flex justify-between items-center">
     <h1 class="text-2xl font-bold tracking-wide">Manage Applications</h1>
-    <a href="../index.html" class="bg-green-700 text-white px-4 py-2 text-sm rounded-md hover:bg-green-800 transition-all shadow">
-      Home
-    </a>
+    <div class="flex gap-4 items-center">
+      <button onclick="toggleEmergency()"
+        class="bg-red-600 text-white px-4 py-2 text-sm rounded-md hover:bg-red-700 transition-all shadow">
+        🚨 Emergency <span id="toggleIcon">▼</span>
+      </button>
+      <a href="../index.html"
+        class="bg-green-700 text-white px-4 py-2 text-sm rounded-md hover:bg-green-800 transition-all shadow">Home</a>
+    </div>
   </header>
 
-  <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-3xl text-center mt-10">
+  <!-- Admin Emergency Dropdown -->
+  <div id="adminEmergencyContent" class="bg-red-800 shadow-lg rounded-lg p-6 w-full max-w-7xl mt-4 hidden">
+    <h2 class="text-xl font-semibold text-white mb-3">🚨 Emergency Applications</h2>
+    <ul id="adminEmergencyList" class="space-y-4"></ul>
+  </div>
+
+  <!-- Normal Applications -->
+  <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-7xl mt-6">
     <h1 class="text-2xl font-semibold text-gray-900 mb-4">📂 Applications Overview</h1>
-    <p class="text-gray-600 mb-4 text-sm">Review, update status, and provide feedback efficiently.</p>
+    <p class="text-gray-600 mb-4 text-sm">Review, filter by category, update status, and provide feedback efficiently.</p>
+
+    <!-- Category Filter -->
+    <div class="mb-4">
+      <label class="bg-purple-700 p-2 rounded font-bold text-white mr-2">Filter by Category:</label>
+      <select id="categoryFilter" class="p-2 border rounded-md" onchange="filterByCategory()">
+        <option value="all">All</option>
+      </select>
+    </div>
 
     <div id="loadingMessage" class="text-gray-500">Loading applications...</div>
     <ul id="fileList" class="mt-4 space-y-4"></ul>
   </div>
 
+  <!-- Footer -->
   <footer class="w-full text-gray-600 text-center py-4 mt-10">
     <p class="text-xs">&copy; 2025 RUET All rights reserved.</p>
   </footer>
@@ -42,54 +64,51 @@
   <script>
     document.addEventListener("DOMContentLoaded", fetchFiles);
 
+    function toggleEmergency() {
+      const content = document.getElementById('adminEmergencyContent');
+      const icon = document.getElementById('toggleIcon');
+      content.classList.toggle('hidden');
+      icon.textContent = content.classList.contains('hidden') ? '▼' : '▲';
+    }
+
     async function fetchFiles() {
       try {
         const response = await fetch("https://backend-ten-sigma-28.vercel.app/get-files");
         const data = await response.json();
         const fileList = document.getElementById("fileList");
+        const emergencyList = document.getElementById("adminEmergencyList");
         const loadingMessage = document.getElementById("loadingMessage");
-        loadingMessage.style.display = "none";
+        const categoryFilter = document.getElementById("categoryFilter");
 
+        loadingMessage.style.display = "none";
         fileList.innerHTML = "";
+        emergencyList.innerHTML = "";
+
+        const categorySet = new Set();
 
         if (data.success && data.files.length > 0) {
           data.files.forEach(file => {
-            const listItem = document.createElement("li");
-            listItem.className = "bg-gray-100 hover:bg-gray-200 transition duration-300 rounded-lg p-4 shadow-md flex flex-col gap-3";
+            const category = file.category || "Uncategorized";
+            if (category !== "Admin Emergency") categorySet.add(category);
 
-            listItem.innerHTML = `
-              <div class="flex items-center justify-between">
-                <span class="text-blue-600 font-medium text-sm">${file.filename}</span>
-                <button onclick="viewFile('${file._id}')" class="bg-blue-500 text-white text-xs px-3 py-1 rounded-md hover:bg-blue-600 transition-all">
-                  View PDF
-                </button>
-              </div>
+            const listItem = createListItem(file, category);
+            listItem.setAttribute("data-category", category);
 
-              <div class="flex items-center justify-between">
-                <label for="status-${file._id}" class="text-gray-700 text-sm">Status:</label>
-                <select id="status-${file._id}" class="p-1 text-sm border rounded-md shadow-sm bg-white">
-                  <option value="under_processing" ${file.status === 'under_processing' ? 'selected' : ''}>Under Processing</option>
-                  <option value="approved" ${file.status === 'approved' ? 'selected' : ''}>Approved</option>
-                  <option value="rejected" ${file.status === 'rejected' ? 'selected' : ''}>Rejected</option>
-                </select>
-                <button onclick="submitStatus('${file._id}')" class="bg-blue-600 text-white text-xs px-3 py-1 rounded-md hover:bg-blue-700 transition-all">
-                  Submit
-                </button>
-              </div>
-
-              <button onclick="toggleFeedback('${file._id}')" class="bg-green-500 text-white text-xs px-3 py-1 rounded-md hover:bg-green-600 transition-all mt-2">
-                Give Feedback
-              </button>
-
-              <div id="feedback-${file._id}" class="hidden mt-2">
-                <textarea class="w-full p-2 border rounded-md shadow-sm bg-white text-sm" placeholder="Enter feedback here...">${file.feedback || ''}</textarea>
-                <button onclick="sendFeedback('${file._id}')" class="mt-2 bg-green-600 text-white text-xs px-3 py-1 rounded-md hover:bg-green-700 transition-all">
-                  Send
-                </button>
-              </div>
-            `;
-            fileList.appendChild(listItem);
+            if (category === "Admin Emergency") {
+              emergencyList.appendChild(listItem);
+            } else {
+              fileList.appendChild(listItem);
+            }
           });
+
+          // Populate Category Filter excluding "Admin Emergency"
+          categorySet.forEach(cat => {
+            const option = document.createElement("option");
+            option.value = cat;
+            option.textContent = cat;
+            categoryFilter.appendChild(option);
+          });
+
         } else {
           fileList.innerHTML = "<p class='text-red-500'>No applications found.</p>";
         }
@@ -99,20 +118,71 @@
       }
     }
 
+    // Filtering only normal applications
+    function filterByCategory() {
+      const selectedCategory = document.getElementById("categoryFilter").value;
+      const items = document.querySelectorAll("#fileList li");
+      items.forEach(item => {
+        const itemCategory = item.getAttribute("data-category");
+        if (selectedCategory === "all" || itemCategory === selectedCategory) {
+          item.style.display = "block";
+        } else {
+          item.style.display = "none";
+        }
+      });
+    }
+
+    function createListItem(file, category) {
+      const listItem = document.createElement("li");
+      listItem.className = "bg-gray-100 hover:bg-gray-200 transition duration-300 rounded-lg p-4 shadow-md flex flex-col gap-3";
+
+      listItem.innerHTML = `
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+            <span class="text-blue-600 font-medium text-sm">${file.filename}</span>
+            <span class="ml-0 sm:ml-3 inline-block bg-gradient-to-r from-purple-800 to-purple-800 text-white text-xs font-semibold px-3 py-1 rounded-full shadow hover:scale-105 transform transition">
+              Category: <span class="font-bold">${category}</span>
+            </span>
+          </div>
+          <button onclick="viewFile('${file._id}')" class="bg-blue-500 text-white text-xs px-3 py-1 rounded-md hover:bg-blue-600 transition-all">
+            View PDF
+          </button>
+        </div>
+
+        <div class="flex items-center justify-between">
+          <label for="status-${file._id}" class="text-gray-700 text-sm">Status:</label>
+          <select id="status-${file._id}" class="p-1 text-sm border rounded-md shadow-sm bg-white">
+            <option value="under_processing" ${file.status === 'under_processing' ? 'selected' : ''}>Under Processing</option>
+            <option value="approved" ${file.status === 'approved' ? 'selected' : ''}>Approved</option>
+            <option value="rejected" ${file.status === 'rejected' ? 'selected' : ''}>Rejected</option>
+          </select>
+          <button onclick="submitStatus('${file._id}')" class="bg-blue-600 text-white text-xs px-3 py-1 rounded-md hover:bg-blue-700 transition-all">
+            Submit
+          </button>
+        </div>
+
+        <button onclick="toggleFeedback('${file._id}')" class="bg-green-500 text-white text-xs px-3 py-1 rounded-md hover:bg-green-600 transition-all mt-2">
+          Give Feedback
+        </button>
+
+        <div id="feedback-${file._id}" class="hidden mt-2">
+          <textarea class="w-full p-2 border rounded-md shadow-sm bg-white text-sm" placeholder="Enter feedback here...">${file.feedback || ''}</textarea>
+          <button onclick="sendFeedback('${file._id}')" class="mt-2 bg-green-600 text-white text-xs px-3 py-1 rounded-md hover:bg-green-700 transition-all">
+            Send
+          </button>
+        </div>
+      `;
+      return listItem;
+    }
+
     function viewFile(id) {
       const pdfViewer = document.getElementById("pdfViewer");
       const pdfModal = document.getElementById("pdfModal");
-
-      // Clear previous PDF first
       pdfViewer.src = "";
-
-      // Show modal immediately
       pdfModal.style.display = "flex";
-
-      // Introduce a short delay before loading the new PDF
       setTimeout(() => {
         pdfViewer.src = `https://backend-ten-sigma-28.vercel.app/file/${id}`;
-      }, 300); // Delay of 300ms ensures the old PDF is cleared
+      }, 300);
     }
 
     function closePDF() {
@@ -159,4 +229,5 @@
     }
   </script>
 </body>
+
 </html>

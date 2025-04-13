@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>VC Panel - Manage Applications</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -12,13 +11,14 @@
   <!-- Header -->
   <header class="w-full bg-white text-green-800 p-4 shadow-md rounded-lg flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
     <h1 class="text-xl sm:text-2xl font-bold tracking-wide">Manage Applications</h1>
-    <div class="flex gap-3 items-center flex-wrap">
-      <button onclick="toggleEmergency()"
-        class="bg-red-600 text-white px-4 py-2 text-sm rounded-md hover:bg-red-700 transition-all shadow whitespace-nowrap">
+    <div class="flex gap-3 items-center flex-wrap ml-auto">
+      <button onclick="toggleEmergency()" class="bg-red-600 text-white px-4 py-2 text-sm rounded-md hover:bg-red-700 transition-all shadow whitespace-nowrap">
         🚨 Emergency <span id="toggleIcon">▼</span>
       </button>
-      <a href="../index.html"
-        class="bg-green-700 text-white px-4 py-2 text-sm rounded-md hover:bg-green-800 transition-all shadow whitespace-nowrap">
+      <button onclick="deleteAllApplications()" class="bg-red-800 text-white px-4 py-2 text-sm rounded-md hover:bg-red-900 transition-all shadow whitespace-nowrap">
+        🗑️ Delete All Applications
+      </button>
+      <a href="../index.html" class="bg-green-700 text-white px-4 py-2 text-sm rounded-md hover:bg-green-800 transition-all shadow whitespace-nowrap">
         Home
       </a>
     </div>
@@ -42,8 +42,6 @@
         <option value="all">All</option>
       </select>
     </div>
-    
-    
 
     <div id="loadingMessage" class="text-gray-500">Loading applications...</div>
     <div class="overflow-x-auto">
@@ -67,7 +65,8 @@
     </div>
   </div>
 
-<script>
+  <!-- Scripts -->
+  <script>
     document.addEventListener("DOMContentLoaded", fetchFiles);
 
     function toggleEmergency() {
@@ -89,6 +88,7 @@
         loadingMessage.style.display = "none";
         fileList.innerHTML = "";
         emergencyList.innerHTML = "";
+        categoryFilter.innerHTML = '<option value="all">All</option>';
 
         const categorySet = new Set();
 
@@ -107,7 +107,6 @@
             }
           });
 
-          // Populate Category Filter excluding "Admin Emergency"
           categorySet.forEach(cat => {
             const option = document.createElement("option");
             option.value = cat;
@@ -124,17 +123,12 @@
       }
     }
 
-    // Filtering only normal applications
     function filterByCategory() {
       const selectedCategory = document.getElementById("categoryFilter").value;
       const items = document.querySelectorAll("#fileList li");
       items.forEach(item => {
         const itemCategory = item.getAttribute("data-category");
-        if (selectedCategory === "all" || itemCategory === selectedCategory) {
-          item.style.display = "block";
-        } else {
-          item.style.display = "none";
-        }
+        item.style.display = selectedCategory === "all" || itemCategory === selectedCategory ? "block" : "none";
       });
     }
 
@@ -150,9 +144,14 @@
               Category: <span class="font-bold">${category}</span>
             </span>
           </div>
-          <button onclick="viewFile('${file._id}')" class="bg-blue-500 text-white text-xs px-3 py-1 rounded-md hover:bg-blue-600 transition-all">
-            View PDF
-          </button>
+          <div class="flex gap-2 flex-wrap">
+            <button onclick="viewFile('${file._id}')" class="bg-blue-500 text-white text-xs px-3 py-1 rounded-md hover:bg-blue-600 transition-all">
+              View PDF
+            </button>
+            <button onclick="deleteFile('${file._id}')" class="bg-red-600 text-white text-xs px-3 py-1 rounded-md hover:bg-red-700 transition-all">
+              Delete
+            </button>
+          </div>
         </div>
 
         <div class="flex items-center justify-between">
@@ -233,7 +232,48 @@
         alert("An error occurred while sending feedback.");
       }
     }
+    
+
+    async function deleteFile(id) {
+      const confirmDelete = confirm("Are you sure you want to delete this file?");
+      if (!confirmDelete) return;
+
+      try {
+        const response = await fetch(`https://backend-ten-sigma-28.vercel.app/delete-file/${id}`, {
+          method: 'DELETE',
+        });
+        const result = await response.json();
+        if (result.success) {
+          alert("File deleted successfully!");
+          fetchFiles();
+        } else {
+          alert("Failed to delete file.");
+        }
+      } catch (error) {
+        alert("An error occurred while deleting the file.");
+      }
+    }
+
+    async function deleteAllApplications() {
+      const confirmed = confirm("⚠️ Are you sure you want to delete ALL applications? This cannot be undone.");
+      if (!confirmed) return;
+
+      try {
+        const response = await fetch("https://backend-ten-sigma-28.vercel.app/delete-all-files", {
+          method: "DELETE",
+        });
+        const result = await response.json();
+        if (result.success) {
+          alert("✅ All applications deleted successfully!");
+          fetchFiles(); // Refresh
+        } else {
+          alert("❌ Failed to delete applications.");
+        }
+      } catch (err) {
+        console.error("Error:", err);
+        alert("❌ An error occurred while deleting applications.");
+      }
+    }
   </script>
 </body>
-
 </html>

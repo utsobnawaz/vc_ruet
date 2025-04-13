@@ -2,22 +2,36 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Application Status</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
-    .fade-in { animation: fadeIn 0.6s ease-out; }
-    .glass { background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(10px); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+
+    .fade-in {
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
   </style>
 </head>
 
 <body class="bg-gradient-to-br from-blue-50 via-white to-gray-200 flex flex-col min-h-screen items-center p-4 sm:p-6">
-
   <header class="w-full bg-white text-green-800 p-6 shadow-md rounded-lg flex justify-between items-center">
     <h1 class="text-xl sm:text-2xl font-bold">📂 Application Status Dashboard</h1>
     <a href="../index.html" class="bg-green-800 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition shadow-lg">
@@ -30,7 +44,6 @@
       <h2 class="text-xl sm:text-3xl font-bold text-gray-900 mb-4 animate-pulse">Application Status</h2>
       <p class="text-gray-600 mb-4 text-sm sm:text-base">View your application statuses in the table below.</p>
 
-      <!-- Search Bar -->
       <input type="text" id="searchInput" placeholder="🔍 Search by filename..."
         class="w-full sm:w-1/2 p-2 border border-gray-300 rounded-lg mb-4 text-sm sm:text-base"
         onkeyup="filterTable()">
@@ -51,7 +64,6 @@
       </div>
     </div>
   </main>
-  
 
   <!-- Feedback Modal -->
   <div id="feedbackModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -64,58 +76,96 @@
     </div>
   </div>
 
+  <!-- Passkey Modal -->
+  <div id="passkeyModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg shadow-xl p-6 max-w-md w-full text-center">
+      <h2 class="text-lg font-semibold mb-2">🔐 Enter Passkey</h2>
+      <input type="password" id="passkeyInput" placeholder="Enter your passkey"
+        class="w-full px-3 py-2 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400">
+      <div class="flex justify-end gap-2">
+        <button onclick="closePasskeyModal()" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded">Cancel</button>
+        <button id="confirmPasskeyBtn" class="px-4 py-2 bg-green-600 text-white hover:bg-green-700 rounded">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 hidden bg-gray-800 text-white px-4 py-3 rounded-lg shadow-lg text-sm sm:text-base"></div>
+
   <footer class="bg-white text-gray-600 text-center py-4 w-full text-xs sm:text-base">
     <p>&copy; 2025 RUET All rights reserved.</p>
   </footer>
 
   <script>
-    document.addEventListener("DOMContentLoaded", fetchStatus);
+    let currentAction = null;
+    let currentFileId = null;
+
+    function showToast(message, type = 'info') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = `fixed bottom-5 right-5 z-50 px-4 py-3 rounded-lg shadow-lg text-sm sm:text-base text-white ${type === 'error' ? 'bg-red-600' : 'bg-green-600'}`;
+      toast.style.display = 'block';
+      setTimeout(() => toast.style.display = 'none', 3000);
+    }
+
+    function openPasskeyModal(action, fileId) {
+      currentAction = action;
+      currentFileId = fileId;
+      document.getElementById('passkeyInput').value = '';
+      document.getElementById('passkeyModal').classList.remove('hidden');
+    }
+
+    function closePasskeyModal() {
+      currentAction = null;
+      currentFileId = null;
+      document.getElementById('passkeyModal').classList.add('hidden');
+    }
+
+    document.getElementById('confirmPasskeyBtn').addEventListener('click', () => {
+      const passkey = document.getElementById('passkeyInput').value;
+      if (!passkey) return showToast("Please enter a passkey.", "error");
+
+      if (currentAction === 'feedback') {
+        fetchFeedback(currentFileId, passkey);
+      } else if (currentAction === 'delete') {
+        deleteFile(currentFileId, passkey);
+      }
+
+      closePasskeyModal();
+    });
 
     async function fetchStatus() {
       try {
         const response = await fetch("https://backend-ten-sigma-28.vercel.app/get-files");
         const data = await response.json();
         const statusTable = document.getElementById("statusTable");
-        const loadingMessage = document.getElementById("loadingMessage");
-        loadingMessage.style.display = "none";
+        document.getElementById("loadingMessage").style.display = "none";
         statusTable.innerHTML = "";
 
         if (data.success && data.files.length > 0) {
-          // Sorting by latest uploaded files first
           data.files.sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate));
+          data.files.forEach(file => {
+            let statusClass = "bg-gray-300 text-gray-800";
+            if (file.status.toLowerCase() === "approved") statusClass = "bg-green-500 text-white";
+            if (file.status.toLowerCase() === "rejected") statusClass = "bg-red-500 text-white";
+            if (file.status.toLowerCase() === "under_processing") statusClass = "bg-blue-500 text-white";
 
-          data.files.forEach((file) => {
-  let statusClass = "bg-gray-300 text-gray-800";
-  if (file.status.toLowerCase() === "approved") statusClass = "bg-green-500 text-white";
-  if (file.status.toLowerCase() === "rejected") statusClass = "bg-red-500 text-white";
-  if (file.status.toLowerCase() === "under_processing") statusClass = "bg-blue-500 text-white";
-
-  const row = `
-    <tr class="fade-in text-xs sm:text-base" id="row-${file._id}">
-      <td class="p-2 sm:p-3 border-b filename">${file.filename}</td>
-      <td class="p-2 sm:p-3 border-b"><span class="px-3 py-1 rounded-full font-semibold ${statusClass}">${file.status}</span></td>
-      <td class="p-2 sm:p-3 border-b flex gap-2 flex-wrap">
-        <button class="bg-purple-500 text-white px-2 sm:px-3 py-1 rounded hover:bg-purple-700" onclick="askForPasskey('${file._id}')">Feedback</button>
-        <button class="bg-red-500 text-white px-2 sm:px-3 py-1 rounded hover:bg-red-700" onclick="deleteFile('${file._id}')">Delete</button>
-      </td>
-    </tr>
-  `;
-  statusTable.innerHTML += row;
-});
-
+            statusTable.innerHTML += `
+              <tr class="fade-in text-xs sm:text-base" id="row-${file._id}">
+                <td class="p-2 sm:p-3 border-b filename">${file.filename}</td>
+                <td class="p-2 sm:p-3 border-b"><span class="px-3 py-1 rounded-full font-semibold ${statusClass}">${file.status}</span></td>
+                <td class="p-2 sm:p-3 border-b flex gap-2 flex-wrap">
+                  <button class="bg-purple-500 text-white px-2 sm:px-3 py-1 rounded hover:bg-purple-700" onclick="openPasskeyModal('feedback', '${file._id}')">Feedback</button>
+                  <button class="bg-red-500 text-white px-2 sm:px-3 py-1 rounded hover:bg-red-700" onclick="openPasskeyModal('delete', '${file._id}')">Delete</button>
+                </td>
+              </tr>`;
+          });
         } else {
           statusTable.innerHTML = "<tr><td colspan='3' class='p-3 text-red-500 text-center'>🚫 No files found.</td></tr>";
         }
       } catch (error) {
         console.error("❌ Error fetching status:", error);
         document.getElementById("loadingMessage").innerHTML = "<p class='text-red-500'>⚠️ Failed to load statuses.</p>";
-      }
-    }
-
-    function askForPasskey(fileId) {
-      const passkey = prompt("Enter your passkey to view feedback:");
-      if (passkey) {
-        fetchFeedback(fileId, passkey);
       }
     }
 
@@ -130,11 +180,31 @@
         if (data.success) {
           showFeedback(data.feedback);
         } else {
-          alert("❌ Incorrect passkey or no feedback available.");
+          showToast("❌ Incorrect passkey or no feedback available.", "error");
         }
       } catch (error) {
-        console.error("❌ Error fetching feedback:", error);
-        alert("⚠️ An error occurred while fetching feedback.");
+        showToast("⚠️ Error fetching feedback.", "error");
+      }
+    }
+
+    async function deleteFile(fileId, passkey) {
+      try {
+        const response = await fetch(`https://backend-ten-sigma-28.vercel.app/delete-file/${fileId}`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ passkey })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          document.getElementById(`row-${fileId}`).remove();
+          showToast("✅ File deleted successfully.");
+        } else {
+          showToast(`❌ Failed to delete file. ${data.message || ''}`, "error");
+        }
+      } catch (error) {
+        console.error("❌ Error deleting file:", error);
+        showToast("⚠️ Error deleting file.", "error");
       }
     }
 
@@ -155,38 +225,7 @@
       });
     }
 
-    async function deleteFile(fileId) {
-
-  const passkey = prompt("🔐 Enter the passkey to confirm deletion:");
-  if (!passkey) {
-    alert("❌ Deletion cancelled. No passkey entered.");
-    return;
-  }
-
-  try {
-    const response = await fetch(`https://backend-ten-sigma-28.vercel.app/delete-file/${fileId}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ passkey })
-    });
-
-    const data = await response.json();
-
-    if (data.success) {
-      document.getElementById(`row-${fileId}`).remove();
-      alert("✅ File deleted successfully.");
-    } else {
-      alert(`❌ Failed to delete file. ${data.message || ''}`);
-    }
-  } catch (error) {
-    console.error("Error deleting file:", error);
-    alert("⚠️ An error occurred while trying to delete the file.");
-  }
-}
-
-
+    document.addEventListener("DOMContentLoaded", fetchStatus);
   </script>
 </body>
 

@@ -51,7 +51,6 @@
       </div>
     </div>
   </main>
-  
 
   <!-- Feedback Modal -->
   <div id="feedbackModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -85,24 +84,20 @@
           data.files.sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate));
 
           data.files.forEach((file) => {
-  let statusClass = "bg-gray-300 text-gray-800";
-  if (file.status.toLowerCase() === "approved") statusClass = "bg-green-500 text-white";
-  if (file.status.toLowerCase() === "rejected") statusClass = "bg-red-500 text-white";
-  if (file.status.toLowerCase() === "under_processing") statusClass = "bg-blue-500 text-white";
+            let statusClass = "bg-gray-300 text-gray-800";
+            if (file.status.toLowerCase() === "approved") statusClass = "bg-green-500 text-white";
+            if (file.status.toLowerCase() === "rejected") statusClass = "bg-red-500 text-white";
+            if (file.status.toLowerCase() === "under_processing") statusClass = "bg-blue-500 text-white";
 
-  const row = `
-    <tr class="fade-in text-xs sm:text-base" id="row-${file._id}">
-      <td class="p-2 sm:p-3 border-b filename">${file.filename}</td>
-      <td class="p-2 sm:p-3 border-b"><span class="px-3 py-1 rounded-full font-semibold ${statusClass}">${file.status}</span></td>
-      <td class="p-2 sm:p-3 border-b flex gap-2 flex-wrap">
-        <button class="bg-purple-500 text-white px-2 sm:px-3 py-1 rounded hover:bg-purple-700" onclick="askForPasskey('${file._id}')">Feedback</button>
-        <button class="bg-red-500 text-white px-2 sm:px-3 py-1 rounded hover:bg-red-700" onclick="deleteFile('${file._id}')">Delete</button>
-      </td>
-    </tr>
-  `;
-  statusTable.innerHTML += row;
-});
-
+            const row = `
+              <tr class="fade-in text-xs sm:text-base">
+                <td class="p-2 sm:p-3 border-b filename">${file.filename}</td>
+                <td class="p-2 sm:p-3 border-b"><span class="px-3 py-1 rounded-full font-semibold ${statusClass}">${file.status}</span></td>
+                <td class="p-2 sm:p-3 border-b"><button class="bg-purple-500 text-white px-2 sm:px-3 py-1 rounded hover:bg-purple-700" onclick="askForPasskey('${file._id}')">View Feedback</button></td>
+              </tr>
+            `;
+            statusTable.innerHTML += row;
+          });
         } else {
           statusTable.innerHTML = "<tr><td colspan='3' class='p-3 text-red-500 text-center'>🚫 No files found.</td></tr>";
         }
@@ -154,39 +149,6 @@
         row.style.display = filename.includes(searchValue) ? "" : "none";
       });
     }
-
-    async function deleteFile(fileId) {
-
-  const passkey = prompt("🔐 Enter the passkey to confirm deletion:");
-  if (!passkey) {
-    alert("❌ Deletion cancelled. No passkey entered.");
-    return;
-  }
-
-  try {
-    const response = await fetch(`https://backend-ten-sigma-28.vercel.app/delete-file/${fileId}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ passkey })
-    });
-
-    const data = await response.json();
-
-    if (data.success) {
-      document.getElementById(`row-${fileId}`).remove();
-      alert("✅ File deleted successfully.");
-    } else {
-      alert(`❌ Failed to delete file. ${data.message || ''}`);
-    }
-  } catch (error) {
-    console.error("Error deleting file:", error);
-    alert("⚠️ An error occurred while trying to delete the file.");
-  }
-}
-
-
   </script>
 </body>
 
